@@ -8,7 +8,7 @@ export function getItem (key) {
 }
 
 // Set item in local storage, or session storage if specified
-export function setItem (key, value, { persist=true, allowFalsey=false }) {
+export function setItem (key, value, { persist=true, allowFalsey=false }={}) {
   if (!allowFalsey && !value) return removeItem(key)
   return persist
     ? localStorage.setItem(key, value)

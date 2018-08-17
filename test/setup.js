@@ -1,0 +1,7 @@
+import Storage from 'dom-storage'
+
+// This file will be run before each individual test file.
+// Here we use it to set up some storage mocks.
+
+global.localStorage = new Storage(null, { strict: true })
+global.sessionStorage = new Storage(null, { strict: true })

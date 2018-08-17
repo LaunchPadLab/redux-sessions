@@ -1,6 +1,6 @@
-import { map, last, uniq } from 'lodash'
+import { map, last, uniq, set } from 'lodash'
 import { storage } from './utils'
-import { get, set } from 'lodash/fp'
+import { get } from 'lodash/fp'
 
 // Storage keys
 
@@ -25,18 +25,16 @@ export function loadSessionState () {
     .filter(key => key.startsWith(STORAGE_PREFIX))
     .map(getUserKeyFromStorageKey))
   const state = {}
-  userKeys.forEach(userKey => set(userKey, {
+  userKeys.forEach(userKey => set(state, userKey, {
     token: storage.getItem(tokenStorageKey(userKey)),
     persist: !!storage.getItem(persistStorageKey(userKey)),
-  }, state))
+  }))
   return state
 }
 
 export function saveSessionState (state) {
-  const sessionState = get('sessions', state)
-  if (!sessionState) throw new Error('redux-sessions: error when attempting to save state. Did you remember to attach the reducer at key `sessions`?')
-  return map(sessionState, ({ token, persist }, userKey) => {
+  return map(state, ({ token, persist }, userKey) => {
     storage.setItem(tokenStorageKey(userKey), token, { persist })
-    storage.setItem(persistStorageKey(userKey), persist)
+    storage.setItem(persistStorageKey(userKey), persist, { persist })
   })
 }

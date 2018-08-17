@@ -1,39 +1,124 @@
-import {
-  reducer,
-} from '../src'
-import {
-  flashMessage,
-  _addMessage,
-  removeMessage,
-  clearMessages,
-} from '../src/actions'
+import { reducer, actions, selectors } from '../src'
 
+// Tests for actions and selectors
 
-test('reducer throws when middleware is not attached', () => {
-  // flashMessage() only reaches reducer if middleware is missing
-  const initialState = { messages: [] }
-  expect(() => reducer(initialState, flashMessage())).toThrow()
+describe('actions.setToken()', () => {
+  it('sets token in the state', () => {
+    const token = 'foo'
+    const initialState = {}
+    const action = actions.setToken(token)
+    const newState = reducer(initialState, action)
+    expect(newState.user.token).toEqual(token)
+  })
+  it('can receive a custom user key', () => {
+    const token = 'foo'
+    const userKey = 'bar'
+    const initialState = {}
+    const action = actions.setToken(token, { userKey })
+    const newState = reducer(initialState, action)
+    expect(newState.bar.token).toEqual(token)
+  })
+  it('defaults persist to true', () => {
+    const token = 'foo'
+    const initialState = {}
+    const action = actions.setToken(token)
+    const newState = reducer(initialState, action)
+    expect(newState.user.persist).toEqual(true)
+  })
+  it('can receive a false persist argument', () => {
+    const token = 'foo'
+    const initialState = {}
+    const action = actions.setToken(token, { persist: false })
+    const newState = reducer(initialState, action)
+    expect(newState.user.persist).toEqual(false)
+  })
 })
 
-test('reducer adds new flash messages correctly', () => {
-  const PRIOR_MESSAGES = [{ message: 'Foo'}, { message: 'Bar' }]
-  const NEW_MESSAGE = { message: 'New message' }
-  const initialState = { messages: PRIOR_MESSAGES }
-  const newState = reducer(initialState, _addMessage(NEW_MESSAGE))
-  expect(newState).toEqual({ messages: [ ...PRIOR_MESSAGES, NEW_MESSAGE ] })
+describe('actions.clearToken()', () => {
+  it('clears token in the state', () => {
+    const initialState = { user: { token: 'foo' }}
+    const action = actions.clearToken()
+    const newState = reducer(initialState, action)
+    expect(newState.user.token).toEqual(null)
+  })
+  it('sets persist to false in state', () => {
+    const initialState = { user: { persist: true }}
+    const action = actions.clearToken()
+    const newState = reducer(initialState, action)
+    expect(newState.user.persist).toEqual(false)
+  })
+  it('can receive a custom user key', () => {
+    const userKey = 'bar'
+    const initialState = { user: { token: 'foo' } }
+    const action = actions.clearToken({ userKey })
+    const newState = reducer(initialState, action)
+    expect(newState.user.token).toEqual('foo')
+    expect(newState.bar.token).toEqual(null)
+  })
 })
 
-test('reducer removes flash messages correctly', () => {
-  const PRIOR_MESSAGES = [{ message: 'Foo', id: 0 }, { message: 'Bar', id: 1 }]
-  const TO_REMOVE = { message: 'New message', id: 2 }
-  const initialState = { messages: [ ...PRIOR_MESSAGES, TO_REMOVE ] }
-  const newState = reducer(initialState, removeMessage(2))
-  expect(newState).toEqual({ messages: PRIOR_MESSAGES })
+// Selectors
+
+describe('selectors.token()', () => {
+  it('throws when session state is not available', () => {
+    const state = {}
+    expect(() => selectors.token(state)).toThrow()
+  })
+  it('fetches default user token from state', () => {
+    const token = 'foo'
+    const state = { sessions: { user: { token }}}
+    expect(selectors.token(state)).toEqual(token)
+  })
+  it('can receive a custom user key', () => {
+    const token = 'foo'
+    const userKey = 'bar'
+    const state = { sessions: { bar: { token }}}
+    expect(selectors.token(state, { userKey })).toEqual(token)
+  })
 })
 
-test('reducer clears flash messages correctly', () => {
-  const PRIOR_MESSAGES = [{ message: 'Foo', id: 0 }, { message: 'Bar', id: 1 }]
-  const initialState = { messages: PRIOR_MESSAGES }
-  const newState = reducer(initialState, clearMessages())
-  expect(newState).toEqual({ messages: [] })
+describe('selectors.isAuthenticated()', () => {
+  it('throws when session state is not available', () => {
+    const state = {}
+    expect(() => selectors.isAuthenticated(state)).toThrow()
+  })
+  it('returns true when user has token in state', () => {
+    const token = 'foo'
+    const state = { sessions: { user: { token }}}
+    expect(selectors.isAuthenticated(state)).toEqual(true)
+  })
+  it('returns false when user does not have token in state', () => {
+    const state = { sessions: {}}
+    expect(selectors.isAuthenticated(state)).toEqual(false)
+  })
+  it('can receive a custom user key', () => {
+    const token = 'foo'
+    const userKey = 'bar'
+    const state = { sessions: { bar: { token }}}
+    expect(selectors.isAuthenticated(state, { userKey })).toEqual(true)
+  })
 })
+
+describe('selectors.isUnauthenticated()', () => {
+  it('throws when session state is not available', () => {
+    const state = {}
+    expect(() => selectors.isUnauthenticated(state)).toThrow()
+  })
+  it('returns false when user has token in state', () => {
+    const token = 'foo'
+    const state = { sessions: { user: { token }}}
+    expect(selectors.isUnauthenticated(state)).toEqual(false)
+  })
+  it('returns true when user does not have token in state', () => {
+    const state = { sessions: {}}
+    expect(selectors.isUnauthenticated(state)).toEqual(true)
+  })
+  it('can receive a custom user key', () => {
+    const token = 'foo'
+    const userKey = 'bar'
+    const state = { sessions: { bar: { token }}}
+    expect(selectors.isUnauthenticated(state, { userKey })).toEqual(false)
+  })
+})
+
+export { reducer, selectors }
