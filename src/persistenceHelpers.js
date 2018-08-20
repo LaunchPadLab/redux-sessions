@@ -1,9 +1,7 @@
 import { map, uniq, set } from 'lodash'
 import { storage } from './utils'
 
-/******************************************************
-  Helpers for saving/loading session info from storage
-*******************************************************/
+/*  Helpers for saving/loading session info from storage */
 
 // This string prefixes the key of everything we store
 const STORAGE_PREFIX = 'redux-sessions'

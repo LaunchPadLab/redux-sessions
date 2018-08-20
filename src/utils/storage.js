@@ -1,6 +1,6 @@
 import { uniq, merge, keys } from 'lodash'
 
-// Unified storage interface
+// Unified interface for local and session storage
 
 // Get item from local storage, falling back to session storage
 export function getItem (key) {
