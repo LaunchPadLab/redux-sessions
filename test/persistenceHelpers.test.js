@@ -14,7 +14,7 @@ describe('loadSessionState()', () => {
     const clientPersist = false
     storage.setItem('redux-sessions:token:advisor', advisorToken)
     storage.setItem('redux-sessions:persist:advisor', advisorPersist)
-    storage.setItem('something-else', 'baz')
+    storage.setItem('something-else', 'baz') // should be ignored
     storage.setItem('redux-sessions:token:client', clientToken, { persist: false })
     storage.setItem('redux-sessions:persist:client', clientPersist, { persist: false })
     const state = loadSessionState()

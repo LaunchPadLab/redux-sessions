@@ -10,11 +10,11 @@ describe('actions.setToken()', () => {
     const newState = reducer(initialState, action)
     expect(newState.user.token).toEqual(token)
   })
-  it('can receive a custom user key', () => {
+  it('can receive a custom user type', () => {
     const token = 'foo'
-    const userKey = 'bar'
+    const userType = 'bar'
     const initialState = {}
-    const action = actions.setToken(token, { userKey })
+    const action = actions.setToken(token, { userType })
     const newState = reducer(initialState, action)
     expect(newState.bar.token).toEqual(token)
   })
@@ -47,10 +47,10 @@ describe('actions.clearToken()', () => {
     const newState = reducer(initialState, action)
     expect(newState.user.persist).toEqual(false)
   })
-  it('can receive a custom user key', () => {
-    const userKey = 'bar'
+  it('can receive a custom user type', () => {
+    const userType = 'bar'
     const initialState = { user: { token: 'foo' } }
-    const action = actions.clearToken({ userKey })
+    const action = actions.clearToken({ userType })
     const newState = reducer(initialState, action)
     expect(newState.user.token).toEqual('foo')
     expect(newState.bar.token).toEqual(null)
@@ -69,11 +69,11 @@ describe('selectors.token()', () => {
     const state = { sessions: { user: { token }}}
     expect(selectors.token(state)).toEqual(token)
   })
-  it('can receive a custom user key', () => {
+  it('can receive a custom user type', () => {
     const token = 'foo'
-    const userKey = 'bar'
+    const userType = 'bar'
     const state = { sessions: { bar: { token }}}
-    expect(selectors.token(state, { userKey })).toEqual(token)
+    expect(selectors.token(state, { userType })).toEqual(token)
   })
 })
 
@@ -91,11 +91,11 @@ describe('selectors.isAuthenticated()', () => {
     const state = { sessions: {}}
     expect(selectors.isAuthenticated(state)).toEqual(false)
   })
-  it('can receive a custom user key', () => {
+  it('can receive a custom user type', () => {
     const token = 'foo'
-    const userKey = 'bar'
+    const userType = 'bar'
     const state = { sessions: { bar: { token }}}
-    expect(selectors.isAuthenticated(state, { userKey })).toEqual(true)
+    expect(selectors.isAuthenticated(state, { userType })).toEqual(true)
   })
 })
 
@@ -113,11 +113,11 @@ describe('selectors.isUnauthenticated()', () => {
     const state = { sessions: {}}
     expect(selectors.isUnauthenticated(state)).toEqual(true)
   })
-  it('can receive a custom user key', () => {
+  it('can receive a custom user type', () => {
     const token = 'foo'
-    const userKey = 'bar'
+    const userType = 'bar'
     const state = { sessions: { bar: { token }}}
-    expect(selectors.isUnauthenticated(state, { userKey })).toEqual(false)
+    expect(selectors.isUnauthenticated(state, { userType })).toEqual(false)
   })
 })
 

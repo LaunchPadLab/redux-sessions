@@ -1,8 +1,10 @@
 import { saveSessionState } from './persistenceHelpers'
 import { debounce } from 'lodash'
 
+const DEFAULT_DEBOUNCE_INTERVAL = 500
+
 // Adds storage functionality to sessions info
-function enhancer ({ persist=true, debounceInterval=500 }={}) {
+function enhancer ({ persist=true, debounceInterval=DEFAULT_DEBOUNCE_INTERVAL }={}) {
   return function enhance (createStore) {
     return function newCreateStore (...args) {
       const store = createStore(...args)
