@@ -1,5 +1,5 @@
 import { saveSessionState } from './persistenceHelpers'
-import { debounce } from 'lodash'
+import { throttle } from 'lodash'
 
 const DEFAULT_DEBOUNCE_INTERVAL = 500
 
@@ -15,7 +15,7 @@ function enhancer ({ persist=true, debounceInterval=DEFAULT_DEBOUNCE_INTERVAL }=
         if (!state.sessions) throw new Error('redux-sessions: error when attempting to save state. Did you remember to attach the reducer at key `sessions`?')
         return saveSessionState(state.sessions)
       }
-      store.subscribe(debounce(persistState, debounceInterval))
+      store.subscribe(throttle(persistState, debounceInterval))
       return store
     }
   }
