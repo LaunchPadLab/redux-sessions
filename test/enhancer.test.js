@@ -1,6 +1,4 @@
 import { enhancer } from '../src'
-// Mock debounce: https://github.com/facebook/jest/issues/3465
-jest.mock('lodash/debounce', () => func => func) 
 
 function mockCreateStore (initialState) {
   const mockStore = {}

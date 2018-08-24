@@ -70,6 +70,8 @@ The `options` object passed to these action creators may contain the following a
 The `redux-sessions` enhancer is what allows the session state to persist across page refreshes. It can receive the following options:
 
 - `persist (default=true)`: A flag indicating whether or not to persist session state.
+- `debounce (default=true)`: A flag indicating whether or not to debounce writing to `localStorage`.
+- `debounceInTestMode (default=false)`: A flag indicating whether or not to debounce writing to `localStorage` when `NODE_ENV === 'test'`.
 - `debounceInterval (default=500)`: The debounce interval used when writing session state to `localStorage` (ms).
 
 ### Selectors
