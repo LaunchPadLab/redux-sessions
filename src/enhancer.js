@@ -1,32 +1,20 @@
-import { saveSessionState } from './persistenceHelpers'
-import { throttle } from 'lodash'
-import { isTestMode } from './utils'
+import { loadSessionState, saveSessionState } from './persistenceHelpers'
 
-const DEFAULT_DEBOUNCE_INTERVAL = 500
+let CACHED_SESSION_STATE = loadSessionState()
 
 // Adds store subscription that persists session state in local storage
-function enhancer ({ 
-  persist=true,
-  debounce=true,
-  debounceInTestMode=false,
-  debounceInterval=DEFAULT_DEBOUNCE_INTERVAL,
-}={}) {
+function enhancer ({ persist=true }={}) {
   return function enhance (createStore) {
     return function newCreateStore (...args) {
       const store = createStore(...args)
       if (!persist) return store
-      // Define subscription function
-      function persistState () {
-        const state = store.getState()
-        if (!state.sessions) throw new Error('redux-sessions: error when attempting to save state. Did you remember to attach the reducer at key `sessions`?')
-        return saveSessionState(state.sessions)
-      }
-      // Don't debounce in test mode, unless otherwise specified
-      const doDebounce = isTestMode() 
-        ? debounceInTestMode
-        : debounce
-      const subscription = doDebounce ? throttle(persistState, debounceInterval) : persistState
-      store.subscribe(subscription)
+      store.subscribe(() => {
+        const sessionState = store.getState().sessions
+        if (!sessionState) throw new Error('redux-sessions: error when attempting to save state. Did you remember to attach the reducer at key `sessions`?')
+        if (sessionState === CACHED_SESSION_STATE) return
+        CACHED_SESSION_STATE = sessionState
+        return saveSessionState(sessionState)
+      })
       return store
     }
   }
