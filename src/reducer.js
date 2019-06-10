@@ -1,4 +1,3 @@
-import { handleActions } from 'redux-actions'
 import { set, get } from 'lodash/fp'
 import * as actions from './actions'
 import { loadSessionState } from './persistenceHelpers'
