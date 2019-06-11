@@ -1,4 +1,3 @@
-import { handleActions } from 'redux-actions'
 import { set, get } from 'lodash/fp'
 import * as actions from './actions'
 import { loadSessionState } from './persistenceHelpers'
@@ -12,17 +11,24 @@ const DEFAULT_USER_TYPE = 'user'
 //   [userType]: { token, persist },
 //   [otherUserType]: { token, persist },
 // }
-const initialState = loadSessionState()
+function getInitialState () {
+  return loadSessionState()
+} 
 
 // Reducer
-const reducer = handleActions({
-  [actions.setToken]: (state, { payload: { token, userType=DEFAULT_USER_TYPE, persist=true } }) => {
-    return set(userType, { token, persist }, state)
-  },
-  [actions.clearToken]: (state, { payload: { userType=DEFAULT_USER_TYPE }={}}) => {
-    return set(userType, { token: null, persist: false }, state)
-  },
-}, initialState)
+function reducer (state, action) {
+  if (state === undefined) return getInitialState()
+  const handlers = {
+    [actions.setToken]: (state, { payload: { token, userType=DEFAULT_USER_TYPE, persist=true } }) => {
+      return set(userType, { token, persist }, state)
+    },
+    [actions.clearToken]: (state, { payload: { userType=DEFAULT_USER_TYPE }={}}) => {
+      return set(userType, { token: null, persist: false }, state)
+    }
+  }
+  const handler = handlers[action.type]
+  return handler ? handler(state, action) : state
+}
 
 // Selectors
 const selectors = {}

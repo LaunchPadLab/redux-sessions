@@ -1,4 +1,21 @@
 import { reducer, actions, selectors } from '../src'
+import { saveSessionState } from '../src/persistenceHelpers'
+
+describe('reducer', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+  it('loads latest state from local storage when reset', () => {
+    const initialState = { user: { token: 'first token', persist: true }}
+    saveSessionState(initialState)
+    // Passing `undefined` for state resets the reducer
+    expect(reducer(undefined, {})).toEqual(initialState)
+    const newInitialState = { user: { token: 'other token', persist: true }}
+    saveSessionState(newInitialState)
+    expect(reducer(undefined, {})).toEqual(newInitialState)
+  })
+})
 
 // Tests for actions and selectors
 
