@@ -38,6 +38,11 @@ function persistStorageKey (userType) {
 // Loads the redux state from local / session storage.
 // We use the storage prefix to figure out which values we've saved.
 export function loadSessionState () {
+  if (!storage.isAvailable()) {
+    // eslint-disable-next-line
+    console.warn('Storage is unavailable, skipping session state load.')
+    return {}
+  }
   const storageKeys = storage.getAllKeys().filter(key => key.startsWith(STORAGE_PREFIX))
   const userTypes = uniq(storageKeys.map(getUserTypeFromStorageKey))
   const state = {}
@@ -50,6 +55,11 @@ export function loadSessionState () {
 
 // Saves the redux state to local / session storage.
 export function saveSessionState (state) {
+  if (!storage.isAvailable()) {
+    // eslint-disable-next-line
+    console.warn('Storage is unavailable, skipping session state save.')
+    return
+  }
   return map(state, ({ token, persist }, userType) => {
     storage.setItem(tokenStorageKey(userType), token, { persist })
     storage.setItem(persistStorageKey(userType), persist, { persist })
