@@ -6,6 +6,8 @@ beforeEach(() => {
   sessionStorage.clear()
 })
 
+// Note- lodash "once" is mocked to simulate each function being run in a new context.
+
 describe('loadSessionState()', () => {
   it('loads session state from localStorage and sessionStorage', () => {
     const advisorToken = 'foo'
@@ -21,6 +23,19 @@ describe('loadSessionState()', () => {
     expect(state).toEqual({ 
       advisor: { token: advisorToken, persist: advisorPersist },
       client: { token: clientToken, persist: clientPersist } 
+    })
+  })
+  describe('with prohibited localStorage', () => {
+    beforeAll(() => {
+      saveSessionState({ advisor: { token: 'foo', persist: true } })
+      window.getItem = Storage.prototype.getItem
+      Storage.prototype.getItem = () => { throw new Error('No access.') }
+    })
+    it('fails gracefully', () => {
+      expect(() => loadSessionState()).not.toThrow()
+    })
+    afterAll(() => {
+      Storage.prototype.getItem = window.getItem
     })
   })
 })
@@ -40,6 +55,18 @@ describe('saveSessionState()', () => {
     expect(localStorage.getItem('redux-sessions:persist:advisor')).toEqual(String(advisorPersist))
     expect(sessionStorage.getItem('redux-sessions:token:client')).toEqual(clientToken)
     expect(sessionStorage.getItem('redux-sessions:persist:client')).toEqual(null)
+  })
+  describe('with prohibited localStorage', () => {
+    beforeAll(() => {
+      window.setItem = Storage.prototype.setItem
+      Storage.prototype.setItem = () => { throw new Error('No access.') }
+    })
+    it('fails gracefully', () => {
+      expect(() => saveSessionState({ advisor: { token: 'foo', persist: true } })).not.toThrow()
+    })
+    afterAll(() => {
+      Storage.prototype.setItem = window.setItem
+    })
   })
 })
 
