@@ -33,7 +33,7 @@
     "@launchpadlab/babel-preset": "^2.1.0",
     "babel-eslint": "^10.0.2",
     "dom-storage": "^2.1.0",
-    "eslint": "^6.1.0",
+    "eslint": "^7.0.0",
     "eslint-plugin-import": "^2.2.0",
     "jest": "^24.8.0",
     "redux": "^4.0.4",
