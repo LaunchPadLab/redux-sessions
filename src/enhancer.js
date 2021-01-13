@@ -1,6 +1,6 @@
 import { loadSessionState, saveSessionState } from './persistenceHelpers'
 
-let CACHED_SESSION_STATE = loadSessionState()
+let CACHED_SESSION_STATE = null //loadSessionState()
 
 // Adds store subscription that persists session state in local storage
 function enhancer ({ persist=true }={}) {
