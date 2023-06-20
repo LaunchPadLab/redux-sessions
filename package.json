@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.10",
-    "redux-actions": "^2.0.3"
+    "redux-actions": "^3.0.0"
   },
   "peerDependencies": {
     "redux": "^4.0.0 || ^3.0.0"
