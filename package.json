@@ -31,7 +31,7 @@
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@launchpadlab/babel-preset": "^2.1.0",
-    "babel-eslint": "^10.0.2",
+    "@babel/eslint-parser": "^7.11.0",
     "dom-storage": "^2.1.0",
     "eslint": "^6.1.0",
     "eslint-plugin-import": "^2.2.0",
